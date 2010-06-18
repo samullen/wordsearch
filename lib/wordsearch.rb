@@ -2,7 +2,7 @@ class WordSearch
   attr_accessor :wordlist, :puzzle, :solution
   attr_writer :height, :width
 
-  VERSION = '0.0.2'
+  VERSION = '0.0.3'
   ROW_OFFSETS = [1,0,0,-1,1,1,-1,-1]
   COL_OFFSETS = [0,1,-1,0,-1,1,1,-1]
 
@@ -36,8 +36,8 @@ class WordSearch
     end
 
     @directions  = 8
-    @height      = 0
-    @width       = 0
+    @height      = nil
+    @width       = nil
 #     @fillalphabet
 
 # if wordlist
@@ -46,11 +46,11 @@ class WordSearch
   end
 
   def width
-    @width || @puzzle[0].size
+    @width ||= @puzzle[0].size
   end
 
   def height
-    @height || @puzzle.size
+    @height ||= @puzzle.size
   end
 
   # number of words in the list
@@ -71,10 +71,10 @@ class WordSearch
 
   # find and return duplicate words from the default or provided wordlist
   def duplicates(wordlist=@wordlist)
+    duplicates = Array.new
+
     wordlist.each do |word|
-      if self.find_word(word) > 1
-        duplicates << word
-      end
+      duplicates << word if self.find_word(word) > 1
     end
 
     duplicates
@@ -84,9 +84,10 @@ class WordSearch
     letters = word.each_char.to_a
     occurrences = 0
 
-    height.times do |r|
-      width.times do |c|
-        if @puzzle[r][c] == letters[0]
+    self.height.times do |r|
+      self.width.times do |c|
+
+        if @puzzle[r][c] == letters.first
           @directions.times do |direction|
             error = false
             rr = r
