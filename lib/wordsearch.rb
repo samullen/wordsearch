@@ -1,22 +1,45 @@
 class WordSearch
-  attr_accessor :wordlist, :puzzle
-  attr_reader :solution
+  attr_accessor :wordlist, :puzzle, :solution
   attr_writer :height, :width
 
-  VERSION = '0.0.1'
+  VERSION = '0.0.2'
+  ROW_OFFSETS = [1,0,0,-1,1,1,-1,-1]
+  COL_OFFSETS = [0,1,-1,0,-1,1,1,-1]
 
-  def initialize(wordlist)
-    @wordlist    = wordlist
-    @row_offsets = [1,0,0,-1,1,1,-1,-1]
-    @col_offsets = [0,1,-1,0,-1,1,1,-1]
+  def initialize(*args)
+    opts = {}
+
+    defaults = {
+      :wordlist  => Array.new,
+      :puzzle    => Array.new,
+      :solution  => Array.new,
+      :intersect => false,
+    }
+
+    case
+    when args.length == 0 then
+    when args.length == 1 && args[0].class == Hash then
+      arg = args.shift
+
+      if arg.class == Hash
+        opts = arg
+      end
+    else
+      raise ArgumentError, "new() expects hash or hashref as argument"
+    end
+
+    opts = defaults.merge opts
+
+    # set instance variables from DEFAULT_OPTIONS
+    opts.each do |k,v|
+      self.instance_variable_set(("@" + k.to_s).to_sym, v)
+    end
+
     @directions  = 8
-    @height      = nil
-    @width       = nil
-    @intersect   = 0
+    @height      = 0
+    @width       = 0
 #     @fillalphabet
 
-    @puzzle      = Array.new
-    @solution    = Array.new
 # if wordlist
 #   normalize wordlist
 # end
@@ -75,8 +98,8 @@ class WordSearch
                 break
               end
 
-              rr += @row_offsets[direction]
-              cc += @col_offsets[direction]
+              rr += ROW_OFFSETS[direction]
+              cc += COL_OFFSETS[direction]
             end
 
             unless error 

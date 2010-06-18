@@ -17,7 +17,7 @@ describe WordSearch do
   end
 
   it "" do
-    ws = WordSearch.new(@puzzle[:ww][:wordlist])
+    ws = WordSearch.new(:wordlist => @puzzle[:ww][:wordlist])
     ws.puzzle = @puzzle[:ww][:puzzle]
     puts ws.expletives
   end
